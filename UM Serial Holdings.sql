@@ -1,3 +1,4 @@
+--Draft Rapid ILL Serial Holdings Report
 select
 	string_agg(idents.name || ': ' || instances.identifiers__value, ', ') as "Standard Numbers",
 	string_agg(distinct instances.title::text, 'NEXT') as "Title",
