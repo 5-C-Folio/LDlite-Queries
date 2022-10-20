@@ -1,9 +1,9 @@
 with
   parameters AS (
     SELECT
-      '2022-10-10':: VARCHAR AS start_date,
+      '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date,
       --Change this value to the earliest date you want to see
-      '2022-10-15':: VARCHAR AS end_date,
+      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date,
       --Change this value to the latest date you want to see
       TO_DATE('02/05', 'MM/DD'):: DATE AS winter_end,
       TO_DATE('05/15', 'MM/DD'):: DATE AS spring_end,

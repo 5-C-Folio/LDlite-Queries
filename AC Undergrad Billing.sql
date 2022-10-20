@@ -1,9 +1,8 @@
 with
   parameters AS (
     SELECT
-      '2022-07-01':: VARCHAR AS start_date,
-      --Change this value to the earliest date you want to see
-      '2022-08-31':: VARCHAR AS end_date --Change this value to the latest date you want to see
+      '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
+      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the latest date you want to see
   )
 select
   accounts.id as "Fee/Fine ID",

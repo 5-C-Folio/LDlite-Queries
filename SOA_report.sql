@@ -3,8 +3,8 @@ with
   parameters AS (
     SELECT
   	  --Start and end dates are INCLUSIVE please use a YYYYMMDD format
-      '20220630':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
-      '20230630':: VARCHAR AS end_date --Change this value to the last date of the desired range
+      '{Start Date (YYYYMMDD)}':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
+      '{End Date (YYYYMMDD)}':: VARCHAR AS end_date --Change this value to the last date of the desired range
   )
 select
   --/*
