@@ -3,12 +3,13 @@ with
   parameters AS (
     SELECT
   	  --Start and end dates are INCLUSIVE please use a YYYYMMDD format
-      '{Start Date (YYYYMMDD)}':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
-      '{End Date (YYYYMMDD)}':: VARCHAR AS end_date --Change this value to the last date of the desired range
+      '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
+      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the last date of the desired range
   )
 select
   --/*
   soa_invoice_lines.invoice_status as "Invoice Status",
+  soa_invoice_lines.line_fund_dist_total::float as "Invoice Line Fund Distribution Amount",
   soa_invoice_lines.vendor_invoice_no as "Vendor Invoice Number",
   soa_invoice_lines.invoice_id as "Invoice UUID",
   soa_invoice_lines.invoice_date as "Invoice Date",
@@ -17,10 +18,8 @@ select
   organizations.code as "Vendor Code",
   funds.name as "Fund Name",
   funds.code as "Fund Code",
-  soa_invoice_lines.fund_distributions__fund_id,
   expense_classes.name as "Expense Class",
   expense_classes.code as "Expense Class Code",
-  soa_invoice_lines.line_fund_dist_total::float as "Invoice Line Fund Distribution Amount",
   soa_invoice_lines.accounting_code as "Accounting Code" --*/
 from
   (
@@ -52,8 +51,8 @@ from
     where
       (status = 'Paid')
       and bill_to = 'eabe1a7d-2c24-449a-8e6b-2126f15a8f68'
-      and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYYMMDD')
-      and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYYMMDD')
+      and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
+      and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
   ) as soa_invoice_lines
   left join organizations.organizations__t as organizations 
   	on soa_invoice_lines.vendor_id::varchar = organizations.id::varchar
@@ -69,7 +68,8 @@ from
 UNION all
 select
   --/*
-  '' as "Invoice Status",
+  'Total' as "Invoice Status",
+  round(sum(soa_invoice_lines.line_fund_dist_total)::numeric, 2)::float as "Invoice Line Fund Distribution Amount",
   '' as "Vendor Invoice Number",
   '' as "Invoice UUID",
   '' as "Invoice Date",
@@ -78,11 +78,8 @@ select
   '' as "Vendor Code",
   '' as "Fund Name",
   '' as "Fund Code",
-  '',
   '' as "Expense Class",
-  'Total' as "Expense Class Code",
-  --soa_invoice_lines.line_fund_dist_total as "Invoice Line Fund Distribution Amount",
-  round(sum(soa_invoice_lines.line_fund_dist_total)::numeric, 2)::float as "Invoice Line Fund Distribution Amount",
+  '' as "Expense Class Code",
   '' as "Accounting Code" --*/
 from
   (
