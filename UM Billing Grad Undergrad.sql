@@ -113,7 +113,7 @@ select
   		when service_points.name in ('UM DuBois Library', 'UM Wadsworth Library', 'UM Digital Media Lab') --DuBois
 		then case
         	when accounts.fee_fine_type in ('Daily Equipment Replacement Bill', 'Hourly Equipment Replacement Bill', 'ILL Replacement', 'Lost item fee', 'Lost item fee (actual cost)', 'Lost item processing fee', 'Replacement processing fee')
-            then '47000000000'
+            then '047000000000'
             when accounts.fee_fine_type in ('General Library Charge', 'Overdue fine')
             then '047100000000'
             end
