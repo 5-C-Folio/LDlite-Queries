@@ -6,8 +6,7 @@ with
   )
 select
   accounts.id as "Fee/Fine ID",
-  users.personal__last_name || ', ' || users.personal__first_name as "Patron name",
-  users.barcode as "Patron Barcode",
+  --users.barcode as "Patron Barcode",
   case
     when users.external_system_id like '%@%' then substring(
       users.external_system_id
@@ -16,7 +15,7 @@ select
     )
     else users.external_system_id
   end as "University ID",
-  users.personal__email as "Patron Email",
+  --users.personal__email as "Patron Email",
   patron_groups.group as "Patron Group",
   substring(accounts.metadata__created_date, 0, 11) as "Billed Date",
   substring(actions.date_action, 0, 11) as "Transaction Date",
@@ -45,6 +44,7 @@ select
     else '0'
   end as "Transaction Amount",
   accounts.barcode as "Item Barcode",
+  users.personal__last_name || ', ' || users.personal__first_name as "Patron name",
   accounts.title as "Item title",
   accounts.fee_fine_owner as "FeeFine Owner",
   locations.name as "Item Location at Checkout"
