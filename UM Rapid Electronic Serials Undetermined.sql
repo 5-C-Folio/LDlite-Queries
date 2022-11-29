@@ -1,5 +1,5 @@
 -- Active: 1666295278584@@reportingtest.ddns.umass.edu@6991@ldplite
---Draft Rapid ILL Serial Holdings Report
+--UM Rapid Electronic Serials Undetermined
 select
 	string_agg(distinct instances.title::text, 'NEXT') as "Title",
 	string_agg(distinct locations.name::text, 'NEXT' ) as "Location",
@@ -8,13 +8,16 @@ select
 	string_agg(distinct oclc.oclc_val::text, ', ') as "OCLC Number(s)",
 	string_agg(distinct issn.issn_val::text, ', ') as "ISSN(s)",
 	string_agg(distinct isbn.isbn_val::text, ', ') as "ISBN(s)",
-	string_agg(distinct statements.holdings_statements__statement::text, ', ') as "Holdings Statement"
+	string_agg(distinct electronic_access__uri::text, ', ') as "URL"
+	--string_agg(distinct statements.holdings_statements__statement::text, ', ') as "Holdings Statement"
 	--string_agg(distinct mat_type.name::text, ', ')
 
 from
 	inventory.holdings_record__t as holdings
-join inventory.holdings_record__t__holdings_statements as statements on
-	holdings.id = statements.id
+--left join inventory.holdings_record__t__holdings_statements as statements on
+--	holdings.id = statements.id
+join inventory.holdings_record__t__electronic_access as access ON
+	holdings.id = access.id
 join inventory.instance__t__identifiers as instances on
 	holdings.instance_id = instances.id
 join inventory.location__t as locations on

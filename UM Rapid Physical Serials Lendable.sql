@@ -1,5 +1,5 @@
 -- Active: 1666295278584@@reportingtest.ddns.umass.edu@6991@ldplite
---Draft Rapid ILL Serial Holdings Report
+-- UM Rapid Physical Serials Lendable
 select
 	string_agg(distinct instances.title::text, 'NEXT') as "Title",
 	string_agg(distinct locations.name::text, 'NEXT' ) as "Location",

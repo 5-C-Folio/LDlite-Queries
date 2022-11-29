@@ -1,4 +1,5 @@
 -- Active: 1666295278584@@reportingtest.ddns.umass.edu@6991
+-- UM Rapid Physical Mono Local Only
 select
 	
 	string_agg(distinct instances.title::text, '') as "Title",
@@ -44,6 +45,7 @@ where
 	and (
 			(mat_type.name in ('Supplement', 'Film') and locations.code like 'UM%')
 			or
-			(locations.code in ( 'AFRNX', 'ACBD', 'AFRXX', 'ACFPS', 'AFMED', 'ACNBS', 'AFRX', 'AFRST', 'AMUS', 'HCDIS', 'HDVD', 'HCNBS', 'MMCUT', 'MMDSP', 'MMFAC', 'MDHON', 'MLEIF', 'MLEIB', 'MLRC', 'MLRCF', 'MDMST', 'MMVID', 'MMAUC', 'MMAUS', 'MMIC', 'MMNWB', 'MPMCD', 'MPRAT', 'MPVID', 'MMAIN', 'MMSTM', 'SXSTK', 'SXSTL', 'SXTHE', 'SASTK', 'SCADI', 'SCANB'))	
+			(mat_type.name not in ('Journal', 'Newspaper')
+			and locations.code in ( 'AFRNX', 'ACBD', 'AFRXX', 'ACFPS', 'AFMED', 'ACNBS', 'AFRX', 'AFRST', 'AMUS', 'HCDIS', 'HDVD', 'HCNBS', 'MMCUT', 'MMDSP', 'MMFAC', 'MDHON', 'MLEIF', 'MLEIB', 'MLRC', 'MLRCF', 'MDMST', 'MMVID', 'MMAUC', 'MMAUS', 'MMIC', 'MMNWB', 'MPMCD', 'MPRAT', 'MPVID', 'MMAIN', 'MMSTM', 'SXSTK', 'SXSTL', 'SXTHE', 'SASTK', 'SCADI', 'SCANB'))	
 		)
 group by holdings.id

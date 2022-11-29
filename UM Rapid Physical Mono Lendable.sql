@@ -1,15 +1,15 @@
 -- Active: 1666295278584@@reportingtest.ddns.umass.edu@6991
+-- UM Rapid Physical Mono Lendable
 select
-
 	string_agg(distinct instances.title::text, '') as "Title",
 	string_agg(distinct locations.name::text, '') as "Location",
 	string_agg(distinct locations.code::text, '') as "Location Code",
 	string_agg(distinct holdings.call_number::text, '') as "Call Number",
 	string_agg(distinct oclc.oclc_val::text, ', ') as "OCLC Number(s)",
 	string_agg(distinct issn.issn_val::text, ', ') as "ISSN(s)",
-	string_agg(distinct isbn.isbn_val::text, ', ') as "ISBN(s)",
-	string_agg(distinct mat_type.name::text, ', ')
-	--string_agg(distinct statements.holdings_statements__statement::text, ', ') as "Holdings Statement",
+	string_agg(distinct isbn.isbn_val::text, ', ') as "ISBN(s)"
+	--string_agg(distinct mat_type.name::text, ', ')
+	--string_agg(distinct statements.holdings_statements__statement::text, ', ') as "Holdings Statement"
 	--string_agg(distinct mat_type."name", ' ') as "Material Type"
 from
 	inventory.holdings_record__t as holdings
