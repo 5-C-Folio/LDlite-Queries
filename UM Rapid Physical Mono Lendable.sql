@@ -44,10 +44,10 @@ where
 	and 
 	(
 		(mat_type.name in ('Map', 'CD-ROM', 'Audio CD', 'LP Phonorecord', 'Archival material', 'Government Publication', 'Score', 'Videocassette', 'Thesis/Dissertation', 'DVD/Blu-ray')
-		and locations.code like 'UM%'
+		and locations.code like 'U%'
 		)
 	or (mat_type.name = 'Book' 
-		and locations.code in ('UEA', 'UMGEN', 'UJUV', 'UNEA', 'UMPER', 'UMLLR', 'USPC', 'UMSTOR')
+		and locations.code in ('UEA', 'UMGEN', 'UJUV', 'UNEA', 'UMPER', 'UMLLR', 'USPC', 'UMSTOR', 'UNASA', 'USGEN', 'URF', 'URFD')
 		)
 	)
 group by holdings.id
