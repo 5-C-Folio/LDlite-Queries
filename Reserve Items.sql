@@ -11,4 +11,4 @@ from
     inner join inventory.location__t locations on reserves.copied_item__temporary_location_id = locations.id
     inner join courses.coursereserves_courses__t courses on courses.course_listing_id = courses.course_listing_object__id
     inner join courses.coursereserves_terms__t terms on courses.course_listing_object__term_id = terms.id
-where terms."name" = '{Term Name (YYYY Fall/Winter/Spring/Summer): }'
+where terms."name" like '{Term Name (YYYY Fall/Winter/Spring/Summer): }'
