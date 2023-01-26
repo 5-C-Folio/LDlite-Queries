@@ -31,7 +31,43 @@ from
       SUBSTR(invoices.payment_date, 0, 11) as payment_date,
       invoices.vendor_id,
       fund_distributions.fund_distributions__expense_class_id as expense_class_id,
-      invoices.accounting_code,
+      vouchers.account_no as vouch_no,
+      vouchers.accounting_code as vouch_code,
+      invoice_lines.accounting_code as line_code,
+      invoice_lines.account_number as line_no,
+      invoices.account_no as inv_no,
+      invoices.accounting_code as inv_code,
+      case
+      	when (invoices.account_no is null and invoices.accounting_code is null)
+      	then 
+      		case 
+	      		when (invoice_lines.accounting_code is null and invoice_lines.account_number is null)
+	      		then
+		      		case
+		      			when vouchers.account_no is null
+	      				then vouchers.accounting_code
+	      				when vouchers.accounting_code is null 
+	      				then vouchers.account_no
+		    			when vouchers.accounting_code = vouchers.account_no
+	      				then vouchers.accounting_code
+	      				else vouchers.account_no || ' (' || vouchers.accounting_code || ')'
+	      			end
+      			when invoice_lines.account_number is null
+      			then invoice_lines.accounting_code
+      			when invoice_lines.accounting_code is null 
+      			then invoice_lines.account_number
+	    		when invoice_lines.accounting_code = invoice_lines.account_number
+      			then invoice_lines.accounting_code
+      			else invoice_lines.account_number || ' (' || invoice_lines.accounting_code || ')'
+      		end 
+	    when invoices.account_no is null
+      	then invoices.accounting_code
+      	when invoices.accounting_code is null 
+      	then invoices.account_no
+	    when invoices.accounting_code = invoices.account_no
+      	then invoices.accounting_code
+      	else invoices.account_no || ' (' || invoices.accounting_code || ')'
+      end as accounting_code,
       fund_distributions.id as invoice_line_id,
       fund_distributions.fund_distributions__encumbrance as encumbrance_id,
       fund_distributions.release_encumbrance,
@@ -47,13 +83,15 @@ from
       end as line_fund_dist_total
     from
     invoice.invoice_lines__t__fund_distributions as fund_distributions  
+      join invoice.invoice_lines__t as invoice_lines on fund_distributions.id = invoice_lines.id
       join invoice.invoices__t as invoices on invoices.id = fund_distributions.invoice_id
+      left join invoice.vouchers__t as vouchers on invoices.id = vouchers.invoice_id 
     where
-      (status = 'Paid')
+      (invoices.status = 'Paid')
       and bill_to = 'eabe1a7d-2c24-449a-8e6b-2126f15a8f68'
       and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
       and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
-  ) as soa_invoice_lines
+      ) as soa_invoice_lines
   left join organizations.organizations__t as organizations 
   	on soa_invoice_lines.vendor_id::varchar = organizations.id::varchar
   left join finance.expense_class__t as expense_classes 
