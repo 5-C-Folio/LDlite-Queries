@@ -89,8 +89,8 @@ from
     where
       (invoices.status = 'Paid')
       and bill_to = 'eabe1a7d-2c24-449a-8e6b-2126f15a8f68'
-      and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
-      and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
+      and TO_DATE(payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
+      and TO_DATE(payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
       ) as soa_invoice_lines
   left join organizations.organizations__t as organizations 
   	on soa_invoice_lines.vendor_id::varchar = organizations.id::varchar
@@ -149,8 +149,8 @@ from
     where
       (status = 'Paid')
       and bill_to = 'eabe1a7d-2c24-449a-8e6b-2126f15a8f68'
-      and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
-      and TO_DATE(invoice_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
+      and TO_DATE(payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
+      and TO_DATE(payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
   ) as soa_invoice_lines
   left join organizations.organizations__t as organizations 
   	on soa_invoice_lines.vendor_id::varchar = organizations.id::varchar
