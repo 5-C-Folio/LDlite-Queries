@@ -43,6 +43,7 @@ select
   end as "Transaction Amount",
   actions.type_action as "Transaction Description",
   accounts.barcode as "Item Barcode",
+  items.effective_call_number_components__call_number as "Call Number",
   accounts.fee_fine_owner as "FeeFine Owner",
   users.personal__last_name || ', ' || users.personal__first_name as "Patron name",
   locations.name as "Location at Checkout",
@@ -52,9 +53,10 @@ from
   feesfines.feefineactions__t as actions
   join feesfines.accounts__t as accounts on actions.account_id = accounts.id
   join users.users__t as users on accounts.user_id = users.id
-  join circulation.loan__t as loans on accounts.loan_id = loans.id
+  left join circulation.loan__t as loans on accounts.loan_id = loans.id
   join users.groups__t as patron_groups on users.patron_group = patron_groups.id
-  join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
+  left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
+  left join inventory.item__t as items on items.id = accounts.item_id
 where
   users.barcode != 'failsafe' 
   --and accounts.owner_id = '' --Include only actions on bills owned by an institution
