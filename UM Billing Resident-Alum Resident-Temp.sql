@@ -54,9 +54,9 @@ from
   feesfines.feefineactions__t as actions
   join feesfines.accounts__t as accounts on actions.account_id = accounts.id
   join users.users__t as users on accounts.user_id = users.id
-  join circulation.loan__t as loans on accounts.loan_id = loans.id
+  left join circulation.loan__t as loans on accounts.loan_id = loans.id
   join users.groups__t as patron_groups on users.patron_group = patron_groups.id
-  join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
+  left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
 where
   users.barcode != 'failsafe' 
   --and accounts.owner_id = '' --Include only actions on bills owned by an institution
