@@ -22,3 +22,4 @@ from
     join courses.coursereserves_terms__t terms on courses.course_listing_object__term_id = terms.id
     join inventory.loan_type__t as temploantype on temploantype.id = items.temporary_loan_type_id
 where locations."name" like (select institution from parameters) || '%'
+and terms."name" = (select semester from parameters)
