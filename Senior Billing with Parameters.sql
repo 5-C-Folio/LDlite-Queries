@@ -2,7 +2,7 @@ WITH parameters as (
 	SELECT
 		'{Start - Expiration Date Range (YYYY-MM-DD)}'::date AS "startExpirationDate", 
 		'{End - Expiration Date Range (YYYY-MM-DD)}'::date as "endExpirationDate",
-		'{Institution (AC, MH, HC, SC, UM)}' as "institution")
+		'{Patron Institution (AC, MH, HC, SC, UM)}' as "institution")
 		--'2023-06-05'::date AS "startExpirationDate", 
 		--'2023-06-05'::date AS "endExpirationDate",
 		--'UM' as "institution")
