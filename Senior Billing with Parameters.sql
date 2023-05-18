@@ -1,8 +1,10 @@
 WITH parameters as (
 	SELECT
-		'{Expiration Date (YYYY-MM-DD)}'::date AS "expirationDate", 
+		'{Start - Expiration Date Range (YYYY-MM-DD)}'::date AS "startExpirationDate", 
+		'{End - Expiration Date Range (YYYY-MM-DD)}'::date as "endExpirationDate",
 		'{Institution (AC, MH, HC, SC, UM)}' as "institution")
-		--'2023-06-05'::date AS "expirationDate", 
+		--'2023-06-05'::date AS "startExpirationDate", 
+		--'2023-06-05'::date AS "endExpirationDate",
 		--'UM' as "institution")
 select users.barcode, 
 	   string_agg(distinct users.personal__last_name||', '||users.personal__first_name, '') as "Patron Name",
@@ -26,6 +28,7 @@ and case
 	when (select institution from parameters) = 'UM' then users.external_system_id like '%@umass.edu'
 	end
 and loan.status__name = 'Open'
-and users.expiration_date::date = (select "expirationDate" from parameters)
+and users.expiration_date::date <= (select "startExpirationDate" from parameters)
+and users.expiration_date::date >= (select "endExpirationDate" from parameters)
 group by
 users.barcode
