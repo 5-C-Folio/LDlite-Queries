@@ -2,15 +2,20 @@ WITH parameters as (
 	SELECT
 		'{Expiration Date (YYYY-MM-DD)}'::date AS "expirationDate", 
 		'{Institution (AC, MH, HC, SC, UM)}' as "institution")
+		--'2023-06-05'::date AS "expirationDate", 
+		--'UM' as "institution")
 select users.barcode, 
 	   string_agg(distinct users.personal__last_name||', '||users.personal__first_name, '') as "Patron Name",
 	   string_agg(distinct users.personal__email::text, '') as "Patron Email Address",
-	   count(loan.id) as "Open Loan Count"
+	   count(loan.id) as "Open Loan Count",
+	   string_agg(DISTINCT substring(locations.name, 0,3), ', ') as "Item Owners"
 from users.users__t as users
 join users.groups__t as patrongroup on
 users.patron_group = patrongroup.id
 join circulation.loan__t as loan on
 loan.user_id = users.id
+join inventory.location__t as locations on 
+locations.id = loan.item_effective_location_id_at_check_out
 where
 patrongroup."group" = 'Undergraduate'
 and case
