@@ -1,3 +1,4 @@
+--Hathi Trust Multi Part Monographs
 select 
 	--oclc		-- REQUIRED
 	substring(substring(string_agg(distinct identifiers.identifiers__value, ','),8) from '[0-9]*') as "oclc",
