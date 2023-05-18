@@ -28,7 +28,7 @@ and case
 	when (select institution from parameters) = 'UM' then users.external_system_id like '%@umass.edu'
 	end
 and loan.status__name = 'Open'
-and users.expiration_date::date <= (select "startExpirationDate" from parameters)
-and users.expiration_date::date >= (select "endExpirationDate" from parameters)
+and users.expiration_date::date >= (select "startExpirationDate" from parameters)
+and users.expiration_date::date <= (select "endExpirationDate" from parameters)
 group by
 users.barcode
