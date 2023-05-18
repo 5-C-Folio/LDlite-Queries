@@ -1,4 +1,3 @@
--- Active: 1666295278584@@reportingtest.ddns.umass.edu@6991@ldplite
 -- UM Rapid Physical Serials Lendable
 select
 	string_agg(distinct instances.title::text, 'NEXT') as "Title",

@@ -1,4 +1,3 @@
--- Active: 1666295278584@@reportingtest.ddns.umass.edu@6991
 -- UM Rapid Physical Mono Local Only
 select
 	

@@ -1,4 +1,3 @@
--- Active: 1666295278584@@reportingtest.ddns.umass.edu@6991
 -- UM Rapid Physical Mono Lendable
 select
 	string_agg(distinct instances.title::text, '') as "Title",
