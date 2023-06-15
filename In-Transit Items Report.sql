@@ -8,9 +8,9 @@ select
 select
 	item.id as "Item ID",
 	item.barcode,
-	coalesce(holdings.call_number_prefix, '') || coalesce(holdings.call_number, '') || coalesce(holdings.call_number_suffix, '') as "Holdings Call Number",
+	substring(regexp_replace(coalesce(item.effective_call_number_components__prefix,''),'\n', '') || regexp_replace(coalesce(item.effective_call_number_components__call_number,''),'\n', '') || regexp_replace(coalesce(item.effective_call_number_components__call_number, ''),'\n', ''), 0, length(regexp_replace(coalesce(item.effective_call_number_components__prefix,''),'\n', '') || regexp_replace(coalesce(item.effective_call_number_components__call_number,''),'\n', '') || regexp_replace(coalesce(item.effective_call_number_components__call_number, ''),'\n', ''))/2+1)  as "Effective Call Number",
 	item.status__name,
-	locations.name,
+	locations.name as "Item Effective Location",
 	item.last_check_in__date_time::date,
 	current_date - item.last_check_in__date_time::date as "Days Since Last Check-in"
 from
@@ -26,4 +26,4 @@ where
 		institution
 	from
 		parameters) || '%'
-order by "Holdings Call Number"
+order by "Item Effective Location", "Effective Call Number"
