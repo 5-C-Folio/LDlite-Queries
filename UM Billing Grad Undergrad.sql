@@ -2,8 +2,10 @@ with
   parameters AS (
     SELECT
       '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date,
+      --'2023-07-01':: VARCHAR AS start_date,
       --Change this value to the earliest date you want to see
       '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date,
+      --'2023-07-31':: VARCHAR AS end_date,
       --Change this value to the latest date you want to see
       TO_DATE('02/05', 'MM/DD'):: DATE AS winter_end,
       TO_DATE('05/15', 'MM/DD'):: DATE AS spring_end,
@@ -19,7 +21,6 @@ select
     )
     else users.external_system_id
   end as "Spire ID",
-  
   --substring(accounts.metadata__created_date, 0, 11) as "Billed Date",
   case
     when TO_DATE(
@@ -155,7 +156,8 @@ select
         end
     end as "Item code",
   actions.type_action as "Transaction Description",
-  accounts.barcode as "Item Barcode"
+  accounts.barcode as "Item Barcode",
+  users.active as "Patron Active"
   --accounts.fee_fine_owner as "FeeFine Owner",
   --users.personal__last_name || ', ' || users.personal__first_name as "Patron name",
   --locations.name as "Location at Checkout",

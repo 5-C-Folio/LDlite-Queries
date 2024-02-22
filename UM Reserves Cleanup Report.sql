@@ -1,15 +1,12 @@
---Retrieves all items with a permanent or temporary reserves loan type and location from a specified semester.
+-- Retrieves all items with a reserves loan type or location not associated with the specified semester
 with 
 parameters as (
 select
-	'{Semester (YYYY Spring/Summer/Fall/Winter)}':: VARCHAR AS semester --Use this line if using the LDlite Reporting Tool
-	--'2023 Spring':: VARCHAR as semester --Use this line if NOT using the LDlite Reporting Tool
-   )
+	'%{Curent Semester (YYYY Spring/Summer/Fall/Winter)}%':: VARCHAR AS semester --Use this line if using the LDlite Reporting Tool
+	--'%2024 Spring%':: VARCHAR as semester --Use this line if NOT using the LDlite Reporting Tool
+   ),
+all_semesters as (
 select
-	string_agg(distinct terms.name, ', ') as "Term(s)",
-	string_agg(distinct effective_location."name",'') as "Effective Location",
-	string_agg(distinct temp_loan."name",'') as "Temporary Loan Type",
-	string_agg(distinct perm_loan."name", '') as "Permanent Loan Type",
 	string_agg(distinct instances.title,'') as "Title",
 	regexp_replace(string_agg(distinct coalesce(items.effective_call_number_components__prefix, ''), '') || string_agg(distinct coalesce(items.effective_call_number_components__call_number, ''), '') || string_agg(distinct coalesce(items.effective_call_number_components__suffix, ''), ''), '\n', '', 'g') as "Call Number", 
 	string_agg(distinct items.barcode,'') as "Item Barcode",
@@ -18,7 +15,12 @@ select
 	string_agg(distinct instructors.course_listing_object__instructor_objects__name, ', ') as "Instructor Name(s)",
 	string_agg(distinct instruct_users.personal__email, ', ') as "Instructor Email(s)",
 	string_agg(distinct courses.course_number, ', ') as "Course Code(s)",
-	string_agg(distinct material_type."name", '') as "Material Type"
+	string_agg(distinct material_type."name", '') as "Material Type",
+	string_agg(distinct terms.name, ', ') as "Term(s)",
+	string_agg(distinct temp_location."name",'') as "Temp Location",
+	string_agg(distinct temp_loan."name",'') as "Temp Loan Type",
+	string_agg(distinct perm_location."name", '') as "Perm Location",
+	string_agg(distinct perm_loan_type."name", '') as "Perm Loan Type"
 from
 	inventory.item__t as items
 --Reserves
@@ -44,20 +46,25 @@ join inventory.holdings_record__t as holdings on
 --Instances
 join inventory.instance__t as instances on
 	instances.id = holdings.instance_id 
---Effective Location
-left join inventory.location__t as effective_location on
-	effective_location.id = items.effective_location_id 
---Temp Loan Type
-left join inventory.loan_type__t as temp_loan on
-	temp_loan.id = items.temporary_loan_type_id
---Perm Loan Type
-left join inventory.loan_type__t as perm_loan on
-	perm_loan.id = items.permanent_loan_type_id 
 --Material Type
 left join inventory.material_type__t as material_type on
 	material_type.id = items.material_type_id 
+--Temp Location
+left join inventory.location__t as temp_location on
+	temp_location.id = items.temporary_location_id
+--Temp Loan Type
+left join inventory.loan_type__t as temp_loan on
+	temp_loan.id = items.temporary_loan_type_id
+--Perm Location
+left join inventory.location__t as perm_location on
+	perm_location.id = holdings.permanent_location_id 
+--Perm Loan Type
+left join inventory.loan_type__t as perm_loan_type on
+	perm_loan_type.id = items.permanent_loan_type_id 
+--Effective Location
+left join inventory.location__t as effective_location on
+	effective_location.id = items.effective_location_id 
 where
-	effective_location.code = 'UMREP'
-	and (temp_loan."name" = 'Reserve 4 Hour' or perm_loan."name" = 'Reserve 4 Hour')
-	and terms.name = (select semester from parameters)
-group by items.id
+	(effective_location.code = 'UMREP' or (temp_loan."name" = 'Reserve 4 Hour' and effective_location.code like 'U%'))
+group by items.id)
+select * from all_semesters where not "Term(s)" like (select semester from parameters)

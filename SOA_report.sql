@@ -1,11 +1,14 @@
---Draft UM SOA Report
+--UM SOA Report
 with
   parameters AS (
     SELECT
   	  --Start and end dates are INCLUSIVE please use a YYYYMMDD format
       '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
       '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the last date of the desired range
-  )
+      --'2023-07-01'::VARCHAR as start_date,
+      --'2024-01-31'::VARCHAR as end_date 
+  ),
+soa_invoice_lines as (
 select
   --/*
   soa_invoice_lines.invoice_status as "Invoice Status",
@@ -86,11 +89,12 @@ from
       join invoice.invoice_lines__t as invoice_lines on fund_distributions.id = invoice_lines.id
       join invoice.invoices__t as invoices on invoices.id = fund_distributions.invoice_id
       left join invoice.vouchers__t as vouchers on invoices.id = vouchers.invoice_id 
+      join invoice.invoices__t__acq_unit_ids as acq_unit on acq_unit.id = invoices.id     
     where
       (invoices.status = 'Paid')
-      and bill_to = 'eabe1a7d-2c24-449a-8e6b-2126f15a8f68'
-      and TO_DATE(payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
-      and TO_DATE(payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
+      and acq_unit.acq_unit_ids = '7e8d460a-93dc-40b4-a1b7-f4a85a0a0dba'
+      and TO_DATE(invoices.payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
+      and TO_DATE(invoices.payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
       ) as soa_invoice_lines
   left join organizations.organizations__t as organizations 
   	on soa_invoice_lines.vendor_id::varchar = organizations.id::varchar
@@ -100,14 +104,16 @@ from
   	on soa_invoice_lines.encumbrance_id::varchar = transactions.id::varchar
   left join finance.fund__t as funds 
   	on soa_invoice_lines.fund_distributions__fund_id::varchar = funds.id::varchar
---ORDER BY
+)
+  	--ORDER BY
 --  "Fund Name",
 --  "Payment Date"
-UNION all
+select * from soa_invoice_lines
+union all
 select
   --/*
   'Total' as "Invoice Status",
-  round(sum(soa_invoice_lines.line_fund_dist_total)::numeric, 2)::float as "Invoice Line Fund Distribution Amount",
+  round(sum("Invoice Line Fund Distribution Amount")::numeric, 2)::float as "Invoice Line Fund Distribution Amount",
   '' as "Vendor Invoice Number",
   '' as "Invoice UUID",
   '' as "Invoice Date",
@@ -120,48 +126,9 @@ select
   '' as "Expense Class Code",
   '' as "Accounting Code" --*/
 from
-  (
-    select 
-      invoices.id as invoice_id,
-      invoices.status as invoice_status,
-      invoices.vendor_invoice_no,
-      SUBSTR(invoices.invoice_date, 0, 11) as invoice_date,
-      SUBSTR(invoices.payment_date, 0, 11) as payment_date,
-      invoices.vendor_id,
-      fund_distributions.fund_distributions__expense_class_id as expense_class_id,
-      invoices.accounting_code,
-      fund_distributions.id as invoice_line_id,
-      fund_distributions.fund_distributions__encumbrance as encumbrance_id,
-      fund_distributions.release_encumbrance,
-      fund_distributions.fund_distributions__fund_id,
-      case
-        fund_distributions.fund_distributions__distribution_type
-        when 'percentage' then
-          fund_distributions.fund_distributions__value::float
-         * fund_distributions.total::float / 100
-        when 'amount' then 
-          fund_distributions.fund_distributions__value::float
-        else 0
-      end as line_fund_dist_total
-    from
-    invoice.invoice_lines__t__fund_distributions as fund_distributions  
-      join invoice.invoices__t as invoices on invoices.id = fund_distributions.invoice_id
-    where
-      (status = 'Paid')
-      and bill_to = 'eabe1a7d-2c24-449a-8e6b-2126f15a8f68'
-      and TO_DATE(payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
-      and TO_DATE(payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
-  ) as soa_invoice_lines
-  left join organizations.organizations__t as organizations 
-  	on soa_invoice_lines.vendor_id::varchar = organizations.id::varchar
-  left join finance.expense_class__t as expense_classes 
-  	on soa_invoice_lines.expense_class_id::varchar = expense_classes.id::varchar
-  left join finance.transaction__t as transactions 
-  	on soa_invoice_lines.encumbrance_id::varchar = transactions.id::varchar
-  left join finance.fund__t as funds 
-  	on soa_invoice_lines.fund_distributions__fund_id::varchar = funds.id::varchar
+  soa_invoice_lines 
 
 ORDER BY
   "Fund Name" desc, 
-  "Payment Date";
+  "Payment Date"
 
