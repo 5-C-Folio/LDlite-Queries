@@ -2,7 +2,7 @@
 with
   parameters AS (
     SELECT
-  	  --Start and end dates are INCLUSIVE please use a YYYYMMDD format
+  	  --Start and end dates are INCLUSIVE please use a YYYY-MM-DD format
       '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
       '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the last date of the desired range
       --'2023-07-01'::VARCHAR as start_date,
