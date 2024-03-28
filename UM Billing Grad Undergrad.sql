@@ -176,7 +176,7 @@ where
   users.barcode != 'failsafe'
   and (
     patron_groups.group = 'Graduate'
-    OR patron_groups.group = 'undergraduate'
+    OR patron_groups.group = 'Undergraduate'
   ) --Only include Graduate and Undergraduate Patrons
   and users.external_system_id like '%@umass.edu'
   and TO_DATE(
