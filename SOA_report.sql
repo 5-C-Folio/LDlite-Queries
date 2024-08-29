@@ -4,9 +4,11 @@ with
     SELECT
   	  --Start and end dates are INCLUSIVE please use a YYYY-MM-DD format
       '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
-      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the last date of the desired range
-      --'2023-07-01'::VARCHAR as start_date,
-      --'2024-01-31'::VARCHAR as end_date 
+      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date, --Change this value to the last date of the desired range
+      '{Fiscal Year (UMFY[year])}'::VARCHAR as fiscal_year -- change this value to the Code for the desired Fiscal Year
+      --'2024-07-01'::VARCHAR as start_date,
+      --'2024-08-07'::VARCHAR as end_date,
+      --'UMFY2025'::VARCHAR as fiscal_year 
   ),
 soa_invoice_lines as (
 select
@@ -90,11 +92,13 @@ from
       join invoice.invoices__t as invoices on invoices.id = fund_distributions.invoice_id
       left join invoice.vouchers__t as vouchers on invoices.id = vouchers.invoice_id 
       join invoice.invoices__t__acq_unit_ids as acq_unit on acq_unit.id = invoices.id     
+      left join finance.fiscal_year__t as fy on fy.id = invoices.fiscal_year_id
     where
       (invoices.status = 'Paid')
       and acq_unit.acq_unit_ids = '7e8d460a-93dc-40b4-a1b7-f4a85a0a0dba'
       and TO_DATE(invoices.payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
       and TO_DATE(invoices.payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
+      and fy.code like (select fiscal_year from parameters)
       ) as soa_invoice_lines
   left join organizations.organizations__t as organizations 
   	on soa_invoice_lines.vendor_id::varchar = organizations.id::varchar
