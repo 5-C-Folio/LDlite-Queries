@@ -33,11 +33,11 @@ join
 join 
 	inventory.instance__t__identifiers as identifiers on
 	identifiers.id = instances.id
-join
-	inventory.location__t as locations on 
+left join
+	(select * from inventory.location__t where substring(location__t.code, 0, 2) = 'U') as locations on 
 	locations.id = holdings.effective_location_id
-where substring(locations.code, 0, 2) = 'U'
+where locations.code is not null 
 and identifiers.identifiers__identifier_type_id = '439bfbae-75bc-4f74-9fc7-b2a2d47ce3ef' --OCLC
-and items.material_type_id = '2d72aa13-2451-41fe-afc7-b3dc7c131389'
+and items.material_type_id = '2d72aa13-2451-41fe-afc7-b3dc7c131389' --Book
 and (items.enumeration is not null or items.chronology is not null or items.volume is not null)
 group by "local_id"
