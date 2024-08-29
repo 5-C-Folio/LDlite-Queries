@@ -1,9 +1,10 @@
 --Retrieves all items with a permanent or temporary reserves loan type and location from a specified semester.
+--Last updated: June 6, 2024
 with 
 parameters as (
 select
 	'{Semester (YYYY Spring/Summer/Fall/Winter)}':: VARCHAR AS semester --Use this line if using the LDlite Reporting Tool
-	--'2023 Spring':: VARCHAR as semester --Use this line if NOT using the LDlite Reporting Tool
+	--'2024 Spring':: VARCHAR as semester --Use this line if NOT using the LDlite Reporting Tool
    )
 select
 	string_agg(distinct terms.name, ', ') as "Term(s)",
