@@ -3,10 +3,8 @@ with
     SELECT
       '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date,
       --'2023-07-01':: VARCHAR AS start_date,
-      --Change this value to the earliest date you want to see
       '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date,
-      --'2023-07-31':: VARCHAR AS end_date,
-      --Change this value to the latest date you want to see
+      --'2023-08-31':: VARCHAR AS end_date,
       TO_DATE('02/05', 'MM/DD'):: DATE AS winter_end,
       TO_DATE('05/15', 'MM/DD'):: DATE AS spring_end,
       TO_DATE('08/31', 'MM/DD'):: DATE AS summer_end,
@@ -172,6 +170,8 @@ from
   join users.groups__t as patron_groups on users.patron_group = patron_groups.id
   left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
   left join inventory.service_point__t as service_points on locations.primary_service_point = service_points.id
+  left join inventory.item__t as item on accounts.barcode = item.barcode 
+  left join inventory.material_type__t as material on item.material_type_id = material.id 
 where
   users.barcode != 'failsafe'
   and (
@@ -203,6 +203,8 @@ where
     ),
     'YYYY-MM-DD'
   )
+  --Excludes Equipment from query results
+  and material.name != 'Equipment'
 order by
   --"Debit/Credit" desc,
   accounts.metadata__created_date
