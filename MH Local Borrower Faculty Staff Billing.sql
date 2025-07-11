@@ -38,7 +38,8 @@ select
       'Overdue fine',
       'Lost item processing fee',
       'Lost item fee',
-      'Staff info only'
+      'Staff info only',
+      'Lost item fee (actual cost)'
     ) then actions.amount_action
     else '0'
   end as "Transaction Amount",
