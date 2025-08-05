@@ -124,6 +124,7 @@ select
             when accounts.fee_fine_type in ('General Library Charge', 'Overdue fine')
             then '048500000000'
             end
+        else 'NO ITEM'
         end
     when accounts.owner_id = 'a59aa418-117f-4382-ad05-afc85ff640e2' --Amherst
     then case
@@ -167,7 +168,7 @@ from
   feesfines.feefineactions__t as actions
   join feesfines.accounts__t as accounts on actions.account_id = accounts.id
   join users.users__t as users on accounts.user_id = users.id
-  join circulation.loan__t as loans on accounts.loan_id = loans.id
+  left join circulation.loan__t as loans on accounts.loan_id = loans.id
   join users.groups__t as patron_groups on users.patron_group = patron_groups.id
   left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
   left join inventory.service_point__t as service_points on locations.primary_service_point = service_points.id
@@ -205,7 +206,7 @@ where
     'YYYY-MM-DD'
   )
   --Excludes Equipment from query results
-  and material.name != 'Equipment'
+  and (material.name != 'Equipment' or material.name is null)
 order by
   --"Debit/Credit" desc,
   accounts.metadata__created_date
