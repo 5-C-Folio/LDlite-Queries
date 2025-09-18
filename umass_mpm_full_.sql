@@ -1,4 +1,5 @@
 --Hathi Trust Multi Part Monographs
+select * from (
 select 
 	--oclc		-- REQUIRED
 	substring(substring(string_agg(distinct identifiers.identifiers__value, ','),8) from '[0-9]*') as "oclc",
@@ -40,4 +41,4 @@ where locations.code is not null
 and identifiers.identifiers__identifier_type_id = '439bfbae-75bc-4f74-9fc7-b2a2d47ce3ef' --OCLC
 and items.material_type_id = '2d72aa13-2451-41fe-afc7-b3dc7c131389' --Book
 and (items.enumeration is not null or items.chronology is not null or items.volume is not null)
-group by "local_id"
+group by "local_id") where "oclc" is not null and "oclc" != ''
