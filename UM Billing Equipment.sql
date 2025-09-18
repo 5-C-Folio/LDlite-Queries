@@ -55,12 +55,12 @@ select
   material_type.name as "Material Type"
 from
   feesfines.feefineactions__t as actions
-  left join feesfines.accounts__t as accounts on actions.account_id = accounts.id
-  join users.users__t as users on actions.user_id = users.id
-  left join circulation.loan__t as loans on accounts.loan_id = loans.id
-  left join users.groups__t as patron_groups on users.patron_group = patron_groups.id
-  left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
-  left join inventory.material_type__t as material_type on material_type.id = accounts.material_type_id
+  left join feesfines.accounts__t as accounts on text(actions.account_id) = text(accounts.id)
+  join users.users__t as users on text(actions.user_id) = text(users.id)
+  left join circulation.loan__t as loans on text(accounts.loan_id) = text(loans.id)
+  left join users.groups__t as patron_groups on text(users.patron_group) = text(patron_groups.id)
+  left join inventory.location__t as locations on text(loans.item_effective_location_id_at_check_out) = text(locations.id)
+  left join inventory.material_type__t as material_type on text(material_type.id) = text(accounts.material_type_id)
 where
   users.barcode != 'failsafe' 
   --and accounts.owner_id = '' --Include only actions on bills owned by an institution

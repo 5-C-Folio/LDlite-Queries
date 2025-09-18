@@ -166,14 +166,14 @@ select
   --accounts.id as "Fee/Fine Account ID"
 from
   feesfines.feefineactions__t as actions
-  join feesfines.accounts__t as accounts on actions.account_id = accounts.id
-  join users.users__t as users on accounts.user_id = users.id
-  left join circulation.loan__t as loans on accounts.loan_id = loans.id
-  join users.groups__t as patron_groups on users.patron_group = patron_groups.id
-  left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
-  left join inventory.service_point__t as service_points on locations.primary_service_point = service_points.id
+  join feesfines.accounts__t as accounts on text(actions.account_id) = text(accounts.id)
+  join users.users__t as users on text(accounts.user_id) = text(users.id)
+  left join circulation.loan__t as loans on text(accounts.loan_id) = text(loans.id)
+  join users.groups__t as patron_groups on text(users.patron_group) = text(patron_groups.id)
+  left join inventory.location__t as locations on text(loans.item_effective_location_id_at_check_out) = text(locations.id)
+  left join inventory.service_point__t as service_points on text(locations.primary_service_point) = text(service_points.id)
   left join inventory.item__t as item on accounts.barcode = item.barcode 
-  left join inventory.material_type__t as material on item.material_type_id = material.id 
+  left join inventory.material_type__t as material on text(item.material_type_id) = text(material.id) 
 where
   users.barcode != 'failsafe'
   and (
