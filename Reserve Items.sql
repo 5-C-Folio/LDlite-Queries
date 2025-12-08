@@ -20,17 +20,17 @@ select
 from
 	courses.coursereserves_reserves__t reserves
 left join inventory.item__t as items on
-	items.id = reserves.item_id
+	text(items.id) = text(reserves.item_id)
 left join courses.coursereserves_courses__t as courses on
-	reserves.course_listing_id = courses.course_listing_id
+	text(reserves.course_listing_id) = text(courses.course_listing_id)
 left join inventory.location__t as effectivelocation on
-	items.effective_location_id = effectivelocation.id
+	text(items.effective_location_id) = text(effectivelocation.id)
 left join inventory.location__t as templocation on
-	items.temporary_location_id = templocation.id
+	text(items.temporary_location_id) = text(templocation.id)
 left join courses.coursereserves_terms__t as terms on
-	courses.course_listing_object__term_id = terms.id
+	text(courses.course_listing_object__term_id) = text(terms.id)
 left join inventory.loan_type__t as temploantype on
-	temploantype.id = items.temporary_loan_type_id
+	text(temploantype.id) = text(items.temporary_loan_type_id)
 where
 	courses.department_object__name like (select institution from parameters) || '%'
 	and terms."name" = (select semester	from parameters)

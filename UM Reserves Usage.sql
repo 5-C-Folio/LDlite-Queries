@@ -17,17 +17,17 @@ join inventory.holdings_record__t as holdings on
 join inventory.instance__t as instances on
 	holdings.instance_id = instances.id  
 left outer join circulation.loan__t as loan on
-	items.id = loan.item_id
+	text(items.id) = text(loan.item_id)
 join courses.coursereserves_reserves__t as reserves on 
-	reserves.item_id = items.id
+	text(reserves.item_id) = text(items.id)
 join courses.coursereserves_courselistings__t as listing on
-	listing.id = reserves.course_listing_id
+	text(listing.id) = text(reserves.course_listing_id)
 join courses.coursereserves_courses__t as course on
-	course.course_listing_id = listing.id 
+	text(course.course_listing_id) = text(listing.id)
 join courses.coursereserves_terms__t as term on 
-	term.id = listing.term_id
+	text(term.id) = text(listing.term_id)
 join courses.coursereserves_courses__t__course_listing_object__instructor_ob as instructor on
-	instructor.id = course.id
+	text(instructor.id) = text(course.id)
 where
 	(loan.loan_date::date >= term.start_date::date or loan.loan_date is null)
 	and (loan.loan_date::date <= term.end_date::date or loan.loan_date is null)

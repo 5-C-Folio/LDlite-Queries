@@ -25,45 +25,45 @@ from
 	inventory.item__t as items
 --Reserves
 left join courses.coursereserves_reserves__t as reserves on
-	reserves.item_id = items.id
+	text(reserves.item_id) = text(items.id)
 left join courses.coursereserves_courselistings__t as course_listing on
-	course_listing.id = reserves.course_listing_id
+	text(course_listing.id) = text(reserves.course_listing_id)
 --Courses
 left join courses.coursereserves_courses__t as courses on
-	course_listing.id = courses.course_listing_id  
+	text(course_listing.id) = text(courses.course_listing_id)  
 --Instructors
 left join courses.coursereserves_courses__t__course_listing_object__instructor_ob as instructors on 
-	instructors.id = courses.id
+	text(instructors.id) = text(courses.id)
 --Instructor User Records
 left join users.users__t as instruct_users on 
-	instruct_users.barcode = instructors.course_listing_object__instructor_objects__barcode	
+	text(instruct_users.barcode) = text(instructors.course_listing_object__instructor_objects__barcode)
 --Terms
 left join courses.coursereserves_terms__t as terms on
-	courses.course_listing_object__term_id = terms.id
+	text(courses.course_listing_object__term_id) = text(terms.id)
 --Holdings
 join inventory.holdings_record__t as holdings on
-	holdings.id = items.holdings_record_id 
+	text(holdings.id) = text(items.holdings_record_id)
 --Instances
 join inventory.instance__t as instances on
-	instances.id = holdings.instance_id 
+	text(instances.id) = text(holdings.instance_id)
 --Material Type
 left join inventory.material_type__t as material_type on
-	material_type.id = items.material_type_id 
+	text(material_type.id) = text(items.material_type_id)
 --Temp Location
 left join inventory.location__t as temp_location on
-	temp_location.id = items.temporary_location_id
+	text(temp_location.id) = text(items.temporary_location_id)
 --Temp Loan Type
 left join inventory.loan_type__t as temp_loan on
-	temp_loan.id = items.temporary_loan_type_id
+	text(temp_loan.id) = text(items.temporary_loan_type_id)
 --Perm Location
 left join inventory.location__t as perm_location on
-	perm_location.id = holdings.permanent_location_id 
+	text(perm_location.id) = text(holdings.permanent_location_id)
 --Perm Loan Type
 left join inventory.loan_type__t as perm_loan_type on
-	perm_loan_type.id = items.permanent_loan_type_id 
+	text(perm_loan_type.id) = text(items.permanent_loan_type_id)
 --Effective Location
 left join inventory.location__t as effective_location on
-	effective_location.id = items.effective_location_id 
+	text(effective_location.id) = text(items.effective_location_id)
 where
 	(effective_location.code = 'UMREP' or (temp_loan."name" = 'Reserve 4 Hour' and effective_location.code like 'U%'))
 group by items.id)
