@@ -5,10 +5,9 @@ with
       --'2023-07-01':: VARCHAR AS start_date,
       '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date,
       --'2023-08-31':: VARCHAR AS end_date,
-      TO_DATE('02/05', 'MM/DD'):: DATE AS winter_end,
-      TO_DATE('05/15', 'MM/DD'):: DATE AS spring_end,
-      TO_DATE('08/31', 'MM/DD'):: DATE AS summer_end,
-      TO_DATE('12/20', 'MM/DD'):: DATE AS fall_end
+      TO_DATE('02/05', 'MM/DD'):: DATE AS fall_end, -- Maps to a "7" in the Term value
+      TO_DATE('05/15', 'MM/DD'):: DATE AS spring_end, -- Maps to "3" in the Term value 
+      TO_DATE('08/31', 'MM/DD'):: DATE AS summer_end -- Maps to "5" in the Term value
   )
 select
   case
@@ -26,10 +25,10 @@ select
       'MM-DD'
     ) <= (
       select
-        winter_end
+        fall_end
       from
         parameters
-    ) then '1' || substring(accounts.metadata__created_date, 3, 2) || '1'
+    ) then '1' || substring(accounts.metadata__created_date, 3, 2)::integer-1 || '7'
     when TO_DATE(
       substring(accounts.metadata__created_date, 6, 11),
       'MM-DD'
@@ -48,16 +47,7 @@ select
       from
         parameters
     ) then '1' || substring(accounts.metadata__created_date, 3, 2) || '5'
-    when TO_DATE(
-      substring(accounts.metadata__created_date, 6, 11),
-      'MM-DD'
-    ) <= (
-      select
-        fall_end
-      from
-        parameters
-    ) then '1' || substring(accounts.metadata__created_date, 3, 2) || '7'
-    else '1' || substring(accounts.metadata__created_date, 3, 5) || '1'
+    else '1' || substring(accounts.metadata__created_date, 3, 2) || '7'
   end as "Term Code",
   --substring(actions.date_action, 0, 11) as "Transaction Date",
   case
