@@ -19,13 +19,13 @@ left join courses.coursereserves_courselistings__t as listing on
 left join courses.coursereserves_terms__t as term on
 	term.id = listing.term_id
 left join inventory.item__t as items on
-	items.id = reserves.item_id 
+	items.id = reserves.item_id::TEXT 
 left join inventory.holdings_record__t as holdings on
 	holdings.id = items.holdings_record_id 
 left join inventory.instance__t as instances on
 	instances.id = holdings.instance_id 
 left join inventory.location__t as locations on
-	locations.id = holdings.effective_location_id
+	locations.id::TEXT = holdings.effective_location_id
 where
 	term."name" = (select semester from parameters)
 	and (
