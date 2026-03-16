@@ -4,7 +4,7 @@ select
 from inventory.location__t as locations
 left join
     inventory.item__t as items on
-    locations.id = items.effective_location_id
+    locations.id::TEXT = items.effective_location_id
 where locations.name like 'UM%'
 group by locations.name
 order by "Item Count"

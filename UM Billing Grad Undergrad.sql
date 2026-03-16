@@ -1,16 +1,17 @@
 with
   parameters AS (
     SELECT
-      '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date,
+      '{Start Date|DATE}':: VARCHAR AS start_date,
       --'2023-07-01':: VARCHAR AS start_date,
-      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date,
+      '{End Date|DATE}':: VARCHAR AS end_date,
       --'2023-08-31':: VARCHAR AS end_date,
       TO_DATE('02/05', 'MM/DD'):: DATE AS fall_end, -- Maps to a "7" in the Term value
       TO_DATE('05/15', 'MM/DD'):: DATE AS spring_end, -- Maps to "3" in the Term value 
       TO_DATE('08/31', 'MM/DD'):: DATE AS summer_end -- Maps to "5" in the Term value
   )
 select
-  case
+users.personal__first_name ||' '|| users.personal__last_name  AS "Patron Name",
+case
     when users.external_system_id like '%@%' then substring(
       users.external_system_id
       from
@@ -21,33 +22,33 @@ select
   --substring(accounts.metadata__created_date, 0, 11) as "Billed Date",
   case
     when TO_DATE(
-      substring(accounts.metadata__created_date, 6, 11),
+      substring(accounts.metadata__created_date::TEXT, 6, 11),
       'MM-DD'
     ) <= (
       select
         fall_end
       from
         parameters
-    ) then '1' || substring(accounts.metadata__created_date, 3, 2)::integer-1 || '7'
+    ) then '1' || substring(accounts.metadata__created_date::TEXT, 3, 2)::integer-1 || '7'
     when TO_DATE(
-      substring(accounts.metadata__created_date, 6, 11),
+      substring(accounts.metadata__created_date::TEXT, 6, 11),
       'MM-DD'
     ) <= (
       select
         spring_end
       from
         parameters
-    ) then '1' || substring(accounts.metadata__created_date, 3, 2) || '3'
+    ) then '1' || substring(accounts.metadata__created_date::TEXT, 3, 2) || '3'
     when TO_DATE(
-      substring(accounts.metadata__created_date, 6, 11),
+      substring(accounts.metadata__created_date::TEXT, 6, 11),
       'MM-DD'
     ) <= (
       select
         summer_end
       from
         parameters
-    ) then '1' || substring(accounts.metadata__created_date, 3, 2) || '5'
-    else '1' || substring(accounts.metadata__created_date, 3, 2) || '7'
+    ) then '1' || substring(accounts.metadata__created_date::TEXT, 3, 2) || '5'
+    else '1' || substring(accounts.metadata__created_date::TEXT, 3, 2) || '7'
   end as "Term Code",
   --substring(actions.date_action, 0, 11) as "Transaction Date",
   case
@@ -171,10 +172,7 @@ where
     OR patron_groups.group = 'Undergraduate'
   ) --Only include Graduate and Undergraduate Patrons
   and users.external_system_id like '%@umass.edu'
-  and TO_DATE(
-    actions.date_action,
-    'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"'
-  ) >= TO_DATE(
+  and actions.date_action::DATE >= TO_DATE(
     (
       select
         start_date
@@ -183,10 +181,7 @@ where
     ),
     'YYYY-MM-DD'
   )
-  and TO_DATE(
-    actions.date_action,
-    'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"'
-  ) <= TO_DATE(
+  and actions.date_action::DATE <= TO_DATE(
     (
       select
         end_date

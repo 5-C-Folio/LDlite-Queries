@@ -32,8 +32,8 @@ from
       invoices.id as invoice_id,
       invoices.status as invoice_status,
       invoices.vendor_invoice_no,
-      SUBSTR(invoices.invoice_date, 0, 11) as invoice_date,
-      SUBSTR(invoices.payment_date, 0, 11) as payment_date,
+      SUBSTR(invoices.invoice_date::TEXT, 0, 11) as invoice_date,
+      SUBSTR(invoices.payment_date::TEXT, 0, 11) as payment_date,
       invoices.vendor_id,
       fund_distributions.fund_distributions__expense_class_id as expense_class_id,
       vouchers.account_no as vouch_no,
@@ -96,8 +96,8 @@ from
     where
       (invoices.status = 'Paid')
       and acq_unit.acq_unit_ids = '7e8d460a-93dc-40b4-a1b7-f4a85a0a0dba'
-      and TO_DATE(invoices.payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
-      and TO_DATE(invoices.payment_date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"') <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
+      and invoices.payment_date::DATE >= TO_DATE((SELECT start_date FROM parameters), 'YYYY-MM-DD')
+      and invoices.payment_date::DATE <= TO_DATE((SELECT end_date FROM parameters), 'YYYY-MM-DD')
       and fy.code like (select fiscal_year from parameters)
       ) as soa_invoice_lines
   left join organizations.organizations__t as organizations 
@@ -119,7 +119,7 @@ select
   'Total' as "Invoice Status",
   round(sum("Invoice Line Fund Distribution Amount")::numeric, 2)::float as "Invoice Line Fund Distribution Amount",
   '' as "Vendor Invoice Number",
-  '' as "Invoice UUID",
+  Null as "Invoice UUID",
   '' as "Invoice Date",
   '' as "Payment Date",
   '' as "Vendor Name",

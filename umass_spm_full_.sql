@@ -28,7 +28,7 @@ join
 	identifiers.id = instances.id
 left join
 	(select * from inventory.location__t where substring(location__t.code, 0, 2) = 'U') as locations on 
-	locations.id = holdings.effective_location_id
+	locations.id::TEXT = holdings.effective_location_id
 where locations.code is not null  
 and identifiers.identifiers__identifier_type_id = '439bfbae-75bc-4f74-9fc7-b2a2d47ce3ef' --OCLC
 and items.material_type_id = '2d72aa13-2451-41fe-afc7-b3dc7c131389' --Book

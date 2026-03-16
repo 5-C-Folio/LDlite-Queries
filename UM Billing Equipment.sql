@@ -1,8 +1,8 @@
 with
   parameters AS (
     SELECT
-      '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
-      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the latest date you want to see
+      '{Start Date|DATE}':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
+      '{End Date|DATE}':: VARCHAR AS end_date --Change this value to the latest date you want to see
 	  --'2023-08-01':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
       --'2023-08-31':: VARCHAR AS end_date --Change this value to the latest date you want to see
 )
@@ -20,8 +20,8 @@ select
   --users.personal__email as "Patron Email",
   patron_groups.group as "Patron Group",
   users.active as "Patron Active",
-  substring(accounts.metadata__created_date, 0, 11) as "Billed Date",
-  substring(actions.date_action, 0, 11) as "Transaction Date",
+  substring(accounts.metadata__created_date::TEXT, 0, 11) as "Billed Date",
+  substring(actions.date_action::TEXT, 0, 11) as "Transaction Date",
   actions.type_action as "Transaction Description",
   case
     when actions.type_action in (
@@ -68,10 +68,7 @@ where
   and material_type.name = 'Equipment'
   --and patron_groups.group = 'Undergraduate'
   and users.external_system_id like '%@umass.edu'
-  and TO_DATE(
-    actions.date_action,
-    'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"'
-  ) >= TO_DATE(
+  and actions.date_action::DATE >= TO_DATE(
     (
       select
         start_date
@@ -80,10 +77,7 @@ where
     ),
     'YYYY-MM-DD'
   )
-  and TO_DATE(
-    actions.date_action,
-    'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"'
-  ) <= TO_DATE(
+  and actions.date_action::DATE <= TO_DATE(
     (
       select
         end_date

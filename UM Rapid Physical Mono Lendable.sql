@@ -17,24 +17,24 @@ from
 join inventory.instance__t__identifiers as instances on
 	holdings.instance_id = instances.id
 join inventory.location__t as locations on
-	holdings.effective_location_id = locations.id
+	holdings.effective_location_id = locations.id::TEXT
 join inventory.item__t as items on
 	items.holdings_record_id = holdings.id
 join inventory.material_type__t as mat_type on
-	items.material_type_id = mat_type.id
+	items.material_type_id = mat_type.id::TEXT
 left join (
 	select inst.identifiers__value as oclc_val, inst.id as inst_id from inventory.instance__t__identifiers as inst 
-	join inventory.identifier_type__t as ident on inst.identifiers__identifier_type_id = ident.id 
+	join inventory.identifier_type__t as ident on inst.identifiers__identifier_type_id = ident.id::TEXT 
 	where ident."name" = 'OCLC' 
 ) as oclc on instances.id = oclc.inst_id
 left join (
 	select inst.identifiers__value as issn_val, inst.id as inst_id from inventory.instance__t__identifiers as inst 
-	join inventory.identifier_type__t as ident on inst.identifiers__identifier_type_id = ident.id 
+	join inventory.identifier_type__t as ident on inst.identifiers__identifier_type_id = ident.id::TEXT
 	where ident."name" = 'ISSN' 
 ) as issn on instances.id = issn.inst_id
 left join (
 	select inst.identifiers__value as isbn_val, inst.id as inst_id from inventory.instance__t__identifiers as inst 
-	join inventory.identifier_type__t as ident on inst.identifiers__identifier_type_id = ident.id 
+	join inventory.identifier_type__t as ident on inst.identifiers__identifier_type_id = ident.id::TEXT 
 	where ident."name" = 'ISBN' 
 ) as isbn on instances.id = isbn.inst_id
 where

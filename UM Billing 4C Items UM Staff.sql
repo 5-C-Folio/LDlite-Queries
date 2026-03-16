@@ -1,8 +1,10 @@
 with
   parameters AS (
     SELECT
-      '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
-      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the latest date you want to see
+      '{Start Date|DATE}':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
+      '{End Date|DATE}':: VARCHAR AS end_date --Change this value to the latest date you want to see
+      --'2026-01-01':: VARCHAR AS start_date, 
+      --'2026-01-31':: VARCHAR AS end_date 
   )
 select
   users.barcode as "Patron Barcode",
@@ -16,8 +18,8 @@ select
   end as "University ID",
   users.personal__email as "Patron Email",
   patron_groups.group as "Patron Group",
-  substring(accounts.metadata__created_date, 0, 11) as "Billed Date",
-  substring(actions.date_action, 0, 11) as "Transaction Date",
+  substring(accounts.metadata__created_date::TEXT, 0, 11) as "Billed Date",
+  substring(actions.date_action::TEXT, 0, 11) as "Transaction Date",
   case
     when actions.type_action in (
       'Credited fully',
@@ -62,10 +64,7 @@ where
   and patron_groups.group in ('Staff', 'Faculty')
   and users.external_system_id like '%@umass.edu'
   and locations.name not like 'UM%'
-  and TO_DATE(
-    actions.date_action,
-    'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"'
-  ) >= TO_DATE(
+  and actions.date_action::DATE >= TO_DATE(
     (
       select
         start_date
@@ -74,10 +73,7 @@ where
     ),
     'YYYY-MM-DD'
   )
-  and TO_DATE(
-    actions.date_action,
-    'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"'
-  ) <= TO_DATE(
+  and actions.date_action::DATE <= TO_DATE(
     (
       select
         end_date

@@ -15,7 +15,7 @@ join
 	sas__t__periods.id = sas__t__orgs.id
 left join 
 	agreements.org__t on
-	org__t.id = substring(sas__t__orgs.orgs__org, 14, 36)
+	org__t.id::TEXT = substring(sas__t__orgs.orgs__org::TEXT, 14, 36)
 left join
 	organizations.organizations__t on 
 	organizations__t.id = org__t.orgs_uuid

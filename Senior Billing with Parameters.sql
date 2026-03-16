@@ -1,10 +1,10 @@
 WITH parameters as (
 	SELECT
-		'{Start - Expiration Date Range (YYYY-MM-DD)}'::date AS "startExpirationDate", 
-		'{End - Expiration Date Range (YYYY-MM-DD)}'::date as "endExpirationDate",
-		'{Patron Institution (AC, MH, HC, SC, UM)}' as "institution")
+		'{Start - Expiration Date Range|DATE}'::date AS "startExpirationDate", 
+		'{End - Expiration Date Range|DATE}'::date as "endExpirationDate",
+		'{Patron Institution|AC|MH|HC|SC|UM}' as "institution")
 		--'2023-06-05'::date AS "startExpirationDate", 
-		--'2023-06-05'::date AS "endExpirationDate",
+		--'2025-06-30'::date AS "endExpirationDate",
 		--'UM' as "institution")
 select users.barcode, 
 	   string_agg(distinct users.personal__last_name||', '||users.personal__first_name, '') as "Patron Name",

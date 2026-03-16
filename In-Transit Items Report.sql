@@ -2,8 +2,8 @@
 with 
 parameters as (
 select
-	--'{Institution Code (AC, HC, MH, SC, UM)}':: VARCHAR AS institution --Use this line if using the LDlite Reporting Tool
-	'UM':: VARCHAR as institution --Use this line if NOT using the LDlite Reporting Tool
+	'{Item Institution Code (AC, HC, MH, SC, UM)}':: VARCHAR AS institution --Use this line if using the LDlite Reporting Tool
+	--'UM':: VARCHAR as institution --Use this line if NOT using the LDlite Reporting Tool
    )
 select
 	item.id as "Item ID",
@@ -17,11 +17,11 @@ select
 from
 	inventory.item__t as item
 join inventory.location__t as locations on
-	locations.id = item.effective_location_id
+	locations.id::TEXT = item.effective_location_id
 left join inventory.holdings_record__t as holdings on
 	holdings.id = item.holdings_record_id 
 left join inventory.service_point__t as servicepoint on
-	servicepoint.id = item.last_check_in__service_point_id 
+	servicepoint.id::TEXT = item.last_check_in__service_point_id
 where
 	item.status__name = 'In transit'
 	and locations.name like (

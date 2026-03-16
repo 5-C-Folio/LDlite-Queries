@@ -3,6 +3,8 @@ with
     SELECT
       '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
       '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the latest date you want to see
+      --'2026-01-01':: VARCHAR AS start_date, 
+      --'2026-01-31':: VARCHAR AS end_date 
   )
 select
   users.barcode as "Patron Barcode",
@@ -17,8 +19,8 @@ select
   end as "University ID",
   users.personal__email as "Patron Email",
   patron_groups.group as "Patron Group",
-  substring(accounts.metadata__created_date, 0, 11) as "Billed Date",
-  substring(actions.date_action, 0, 11) as "Transaction Date",
+  substring(accounts.metadata__created_date::VARCHAR, 0, 11) as "Billed Date",
+  substring(actions.date_action::VARCHAR, 0, 11) as "Transaction Date",
   case
     when actions.type_action in (
       'Credited fully',
@@ -57,7 +59,7 @@ from
   left join circulation.loan__t as loans on accounts.loan_id = loans.id
   join users.groups__t as patron_groups on users.patron_group = patron_groups.id
   left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
-  left join inventory.item__t as items on items.id = accounts.item_id
+  left join inventory.item__t as items on items.id = accounts.item_id::TEXT
 where
   users.barcode != 'failsafe' 
   --and accounts.owner_id = '' --Include only actions on bills owned by an institution
@@ -68,10 +70,7 @@ where
     )
     or patron_groups.group in ('MH Affiliate', 'MH Alumna', 'MH Resident')
   )
-  and TO_DATE(
-    actions.date_action,
-    'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"'
-  ) >= TO_DATE(
+  and actions.date_action::DATE >= TO_DATE(
     (
       select
         start_date
@@ -80,10 +79,7 @@ where
     ),
     'YYYY-MM-DD'
   )
-  and TO_DATE(
-    actions.date_action,
-    'YYYY-MM-DD"T"HH24:MI:SS.MS"+0000"'
-  ) <= TO_DATE(
+  and actions.date_action::DATE <= TO_DATE(
     (
       select
         end_date
