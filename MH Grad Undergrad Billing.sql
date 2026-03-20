@@ -59,7 +59,7 @@ from
   left join circulation.loan__t as loans on accounts.loan_id = loans.id
   join users.groups__t as patron_groups on users.patron_group = patron_groups.id
   left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
-  left join inventory.item__t as items on items.id = accounts.item_id::TEXT
+  left join inventory.item__t as items on items.id::UUID = accounts.item_id
 where
   users.barcode != 'failsafe' 
   --and accounts.owner_id = '' --Include only actions on bills owned by an institution
