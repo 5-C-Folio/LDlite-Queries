@@ -3,9 +3,9 @@ with
   parameters AS (
     SELECT
   	  --Start and end dates are INCLUSIVE please use a YYYY-MM-DD format
-      '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
-      '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date, --Change this value to the last date of the desired range
-      '{Fiscal Year (UMFY[year])}'::VARCHAR as fiscal_year -- change this value to the Code for the desired Fiscal Year
+      '{Start Date|DATE}':: VARCHAR AS start_date, -- Change this value to the first date of the desired range
+      '{End Date|DATE}':: VARCHAR AS end_date, --Change this value to the last date of the desired range
+      '{Fiscal Year (UMFY[YYYY])}'::VARCHAR as fiscal_year -- change this value to the Code for the desired Fiscal Year
       --'2024-07-01'::VARCHAR as start_date,
       --'2024-08-07'::VARCHAR as end_date,
       --'UMFY2025'::VARCHAR as fiscal_year 
