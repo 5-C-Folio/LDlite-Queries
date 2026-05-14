@@ -2,8 +2,8 @@
 with 
 parameters as (
 select
-	'{Institution Code (AC, HC, MH, SC, UM)}':: VARCHAR AS institution, --Use this line if using the LDlite Reporting Tool
-	'{Item Status}':: VARCHAR AS status --Use this line if using the LDlite Reporting Tool
+	'{Institution Code|AC|HC|MH|SC|UM}':: VARCHAR AS institution, --Use this line if using the LDlite Reporting Tool
+	'{Item Status|Aged to lost|Available|Awaiting delivery|Awaiting pickup|Checked out|Claimed returned|Declared lost|In process|In process (non-requestable)|In transit|Intellectual item|Long missing|Lost and paid|Missing|On order|Order closed|Paged|Restricted|Unavailable|Unknown|Withdrawn}':: VARCHAR AS status --Use this line if using the LDlite Reporting Tool
 	--'UM':: VARCHAR as institution, --Use this line if NOT using the LDlite Reporting Tool
 	--'Missing':: VARCHAR as status --Use this line if NOT using the LDlite Reporting Tool
    )
@@ -13,6 +13,7 @@ select
 	substring(regexp_replace(coalesce(item.effective_call_number_components__prefix,''),'\n', '') || regexp_replace(coalesce(item.effective_call_number_components__call_number,''),'\n', '') || regexp_replace(coalesce(item.effective_call_number_components__call_number, ''),'\n', ''), 0, length(regexp_replace(coalesce(item.effective_call_number_components__prefix,''),'\n', '') || regexp_replace(coalesce(item.effective_call_number_components__call_number,''),'\n', '') || regexp_replace(coalesce(item.effective_call_number_components__call_number, ''),'\n', ''))/2+1)  as "Effective Call Number",
 	item.status__name,
 	locations.name as "Item Effective Location",
+	item.status__date as "Status Last Updated",
 	servicepoint.name as "Last Service Point Checked In",
 	item.last_check_in__date_time::date,
 	current_date - item.last_check_in__date_time::date as "Days Since Last Check-in"
