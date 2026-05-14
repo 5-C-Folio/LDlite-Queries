@@ -63,6 +63,7 @@ from
 where
   users.barcode != 'failsafe' 
   --and accounts.owner_id = '' --Include only actions on bills owned by an institution
+  and (users.custom_fields__user_type != 'opt_7' or users.custom_fields__user_type is null) -- excludes Learning in Retirement Users
   and (
     (
       patron_groups.group in ('Faculty', 'Staff')

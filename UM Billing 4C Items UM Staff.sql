@@ -60,6 +60,7 @@ from
   left join inventory.location__t as locations on loans.item_effective_location_id_at_check_out = locations.id
 where
   users.barcode != 'failsafe' 
+  and (users.custom_fields__user_type != 'opt_7' or users.custom_fields__user_type is null)
   --and accounts.owner_id = '' --Include only actions on bills owned by an institution
   and patron_groups.group in ('Staff', 'Faculty')
   and users.external_system_id like '%@umass.edu'
