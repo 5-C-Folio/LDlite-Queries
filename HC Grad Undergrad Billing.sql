@@ -1,8 +1,8 @@
 with
   parameters AS (
     SELECT
-     '{Start Date (YYYY-MM-DD)}':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
-     '{End Date (YYYY-MM-DD)}':: VARCHAR AS end_date --Change this value to the latest date you want to see
+     '{Start Date|DATE}':: VARCHAR AS start_date, --Change this value to the earliest date you want to see
+     '{End Date|DATE}':: VARCHAR AS end_date --Change this value to the latest date you want to see
 	 --'2026-01-01'::VARCHAR as start_date,
 	 --'2026-01-31'::VARCHAR as end_date
   )

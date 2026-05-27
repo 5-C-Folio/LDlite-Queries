@@ -1,7 +1,7 @@
 with 
 parameters as (
 select
-	'{Institution Code (AC, HC, MH, SC, UM)}':: VARCHAR AS institution, --Use this line if using the LDlite Reporting Tool
+	'{Institution Code|AC|HC|MH|SC|UM}':: VARCHAR AS institution, --Use this line if using the LDlite Reporting Tool
 	'{Semester (YYYY Spring/Summer/Fall/Winter)}':: VARCHAR AS semester, --Use this line if using the LDlite Reporting Tool
 	LOWER('{Material Type (For any material type use %)}')::VARCHAR AS material --Use this line if using the LDlite Reporting Tool
 	--'MH':: VARCHAR as institution, --Use this line if NOT using the LDlite Reporting Tool

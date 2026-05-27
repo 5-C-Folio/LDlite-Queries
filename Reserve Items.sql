@@ -1,7 +1,7 @@
 with 
 parameters as (
 select
-	'{Institution Code (AC, HC, MH, SC, UM)}':: VARCHAR AS institution, --Use this line if using the LDlite Reporting Tool
+	'{Institution Code|AC|HC|MH|SC|UM}':: VARCHAR AS institution, --Use this line if using the LDlite Reporting Tool
 	'{Semester (YYYY Spring/Summer/Fall/Winter)}':: VARCHAR AS semester --Use this line if using the LDlite Reporting Tool
 	--'UM':: VARCHAR as institution, --Use this line if NOT using the LDlite Reporting Tool
     --'2023 Spring':: VARCHAR as semester --Use this line if NOT using the LDlite Reporting Tool

@@ -2,7 +2,7 @@
 with 
 parameters as (
 select
-	'{Item Institution Code (AC, HC, MH, SC, UM)}':: VARCHAR AS institution --Use this line if using the LDlite Reporting Tool
+	'{Item Institution Code|AC|HC|MH|SC|UM}':: VARCHAR AS institution --Use this line if using the LDlite Reporting Tool
 	--'UM':: VARCHAR as institution --Use this line if NOT using the LDlite Reporting Tool
    )
 select
