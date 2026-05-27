@@ -44,7 +44,7 @@ select
 		note_types.name = 'Action note' 
 		and instance_notes.notes__note like '%east%' 
 		and instance_notes.notes__note like '%MU'),'')  as "Retention Note",
-	coalesce(string_agg(distinct substring(trim(leading '0' from substring(instanceidentifiers.identifiers__value,8)) from '[0-9]*'), ''),'') as "oclcNumber"
+	coalesce(string_agg(distinct substring(trim(leading '0' from substring(instanceidentifiers.identifiers__value,8)) from '[0-9]*'), '|'),'') as "oclcNumber"
 into temp table UM_holdings_on_instance
 from
 		select_items as items
